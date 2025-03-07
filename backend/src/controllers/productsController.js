@@ -1,5 +1,6 @@
 //Array de metodos (C R U D)
 const productsController = {};
+import { json } from "express";
 import Products from "../models/Products.js";
 
 //SELECT
