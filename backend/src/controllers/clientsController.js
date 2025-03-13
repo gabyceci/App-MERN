@@ -58,14 +58,14 @@ clientsController.updatedClients = async (req, res) => {
   await clientsModel.findByIdAndUpdate(
     req.params.id,
     {
-      name,
-      lastName,
-      birthday,
-      email,
-      password,
-      telephone,
-      dui,
-      isVerified,
+        name,
+        lastName,
+        birthday,
+        email,
+        password,
+        telephone,
+        dui,
+        isVerified,
     },
     { new: true }
   );
