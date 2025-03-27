@@ -5,13 +5,17 @@ import branchesRoutes from "./src/routes/branches.js"
 import clientsRoutes from "./src/routes/clients.js"
 import employeesRoutes from "./src/routes/employees.js"
 import reviewsRoutes from "./src/routes/reviews.js"
-
+import registerEmployeesRoutes from "./src/routes/registerEmployees.js";
+import cookieParser from "cookie-parser";
 
 //Creo una constante que es igual a la libreria que importé
 const app = express();
 
 //Que acepte datos de la ruta json
 app.use(express.json());
+
+//Que postman acepte guardar cookies
+app.use(cookieParser())
 
 //Definir las rutas de las funciones que tendrá la página web
 app.use("/api/products", productRoutes);
@@ -23,7 +27,8 @@ app.use("/api/clients", clientsRoutes);
 app.use("/api/employees", employeesRoutes);
 
 app.use("/api/reviews", reviewsRoutes);
-app.use("api/registerEmployees")
+
+app.use("/api/registerEmployees", registerEmployeesRoutes)
 
 
 

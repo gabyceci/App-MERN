@@ -52,10 +52,25 @@ registerEmployeesController.register = async (req, res) => {
     await newEmployees.save();
 
     //TOKEN
-    
+    jsonwebtoken.sign(
+        //1- Que voy a guardar
+        {id: newEmployees._id},
+        //2- secreto
+        config.JWT.secret,
+        //3- Cuando expira
+        {expiresIn: config.JWT.expiresIn},
+        //4- Función flecha
+    (error, token) =>{
+        if(error) console.log("Error" + error)
+
+            res.cookie("authToken", token)
+            res.json({message: "Employee saved"})
+        }
+    )
 
   }catch(error){
-
+    console.log("Error" + error)
+    res.json({message: "Error saving employee"})
   }
 
 };
