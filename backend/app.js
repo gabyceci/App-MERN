@@ -23,6 +23,7 @@ app.use("/api/clients", clientsRoutes);
 app.use("/api/employees", employeesRoutes);
 
 app.use("/api/reviews", reviewsRoutes);
+app.use("api/registerEmployees")
 
 
 

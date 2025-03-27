@@ -35,6 +35,10 @@ const employeesSchema = new Schema(
       type: Date,
       require: true,
     },
+    email: {
+      type: String,
+      require: true,
+    },
     password: {
         type: String,
         require: true,
