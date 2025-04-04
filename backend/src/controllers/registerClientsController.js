@@ -6,6 +6,7 @@ import crypto from "crypto"; //Generar código
 
 import clientsModel from "../models/Clients.js";
 import {config} from "../config.js";
+import { errorMonitor } from "events";
 
 //Array de funciones
 const registerClientsController = {};
@@ -62,13 +63,79 @@ registerClientsController.registerClient = async (req, res) => {
         (error, token) =>{
             if(error) console.log("Error" + error)
                 res.cookie("verificationToken", token, {maxAge: 2 * 60 * 60 * 1000}) //Solo si esta validada con https se pone: {httpOnly: true}
-                res.json({message: "Client saved"})
             }
         )
     
+        //Enviar correo de verificación
+        //1- Transporter: ¿Desde dónde voy a enviar el correo?
+        const transporter = nodemailer.createTransport({
+            service: "gmail", 
+            auth: {
+                user: config.email.user,
+                pass: config.email.pass                
+            }
+        })
+
+
+        //2- Options: ¿A quién se lo voy a enviar?
+        const mailOptions = {
+            from: config.email.user,
+            to: email,
+            subject: "Verificación de correo",
+            text: `Para verificar que eres dueño de la cuenta, utiliza este codigo ${verificationCode}\n Este código expira en 2 horas\n`
+        }
+
+
+        //3- Envio del correo 
+        transporter.sendMail(mailOptions, (error, info) =>{
+            if(error) console.log("error" + error)
+            res.json({message: "Email sent"})
+        })
+
+        res.json({message: "Client registered, please verify your email"})
+
       }catch(error){
-        console.log("Error" + error)
-        res.json({message: "Error saving client"})
+        res.json({message: "Error" + error})
       }
-        
+    };
+
+
+    registerClientsController.verificationCodeEmail = async (req, res) =>{
+        const{verificationCode} = req.body;
+        //Acceder al token "verification token" ya que este contiene: el email, el código de verificación y cuando expira el código
+        const token = req.cookies.verificationCode;
+
+        if(!token){
+            return res.json({message: "Please register your account first"})
+        }
+
+        try {
+            //Verificamos y descoficamos el token para obtener el email y el cógido de verificación que acabamos de guardar al momento de registrar
+            const decoded = jsonwebtoken.verify(token, config.JWT.secret)
+            const {email, verificationCode: storedCode} = decoded;
+
+            //Comparar el código recibido con el almacenado en el token
+            if(verificationCode !== storedCode){
+                return res.json({message: "Invalid verification code"})
+            }
+
+            //Busco al cliente
+            const client = await clientsModel.findOne({email})
+            if(!client){
+                return res.json({message: "Client not found"})
+            }
+
+            //A ese cliente le cambio el campo "isVerified" a true
+            client.isVerified = true,
+            await client.save();
+            
+            //Quitar el token con el email, codigo de verificación 
+            res.clearCookie("verificationToken")
+
+            res.json({message: "Email verified successfully"})
+
+
+        } catch (error) {
+            res.json({message: "Error" + error})
+        }
     }
