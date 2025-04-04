@@ -1,6 +1,6 @@
 //Importamos todas las librerias
 import jsonwebtoken from "jsonwebtoken"; //Generar Token
-import bcrypt from "bcryptjs"; //Encriptar
+import bcryptjs from "bcryptjs"; //Encriptar
 import nodemailer from "nodemailer"; //Enviar correo
 import crypto from "crypto"; //Generar código
 
@@ -103,7 +103,7 @@ registerClientsController.registerClient = async (req, res) => {
     registerClientsController.verificationCodeEmail = async (req, res) =>{
         const{verificationCode} = req.body;
         //Acceder al token "verification token" ya que este contiene: el email, el código de verificación y cuando expira el código
-        const token = req.cookies.verificationCode;
+        const token = req.cookies.verificationToken;
 
         if(!token){
             return res.json({message: "Please register your account first"})
@@ -139,3 +139,5 @@ registerClientsController.registerClient = async (req, res) => {
             res.json({message: "Error" + error})
         }
     }
+
+    export default registerClientsController;

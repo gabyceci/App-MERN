@@ -9,6 +9,7 @@ import registerEmployeesRoutes from "./src/routes/registerEmployees.js";
 import cookieParser from "cookie-parser";
 import loginRoutes from "./src/routes/login.js"
 import logoutRoutes from "./src/routes/logout.js"
+import registerClientRoutes from "./src/routes/registerClients.js"
 
 //Creo una constante que es igual a la libreria que importé
 const app = express();
@@ -36,7 +37,8 @@ app.use("/api/login", loginRoutes);
 
 app.use("/api/logout", logoutRoutes);
 
-app.use("/api/registerClients")
+app.use("/api/registerClients", registerClientRoutes)
+
 
 
 
