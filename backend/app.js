@@ -7,6 +7,8 @@ import employeesRoutes from "./src/routes/employees.js"
 import reviewsRoutes from "./src/routes/reviews.js"
 import registerEmployeesRoutes from "./src/routes/registerEmployees.js";
 import cookieParser from "cookie-parser";
+import loginRoutes from "./src/routes/login.js"
+import logoutRoutes from "./src/routes/logout.js"
 
 //Creo una constante que es igual a la libreria que importé
 const app = express();
@@ -15,7 +17,7 @@ const app = express();
 app.use(express.json());
 
 //Que postman acepte guardar cookies
-app.use(cookieParser())
+app.use(cookieParser());
 
 //Definir las rutas de las funciones que tendrá la página web
 app.use("/api/products", productRoutes);
@@ -28,7 +30,11 @@ app.use("/api/employees", employeesRoutes);
 
 app.use("/api/reviews", reviewsRoutes);
 
-app.use("/api/registerEmployees", registerEmployeesRoutes)
+app.use("/api/registerEmployees", registerEmployeesRoutes);
+
+app.use("/api/login", loginRoutes);
+
+app.use("/api/logout", logoutRoutes);
 
 
 
